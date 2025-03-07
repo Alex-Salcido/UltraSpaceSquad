@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-22GVPJFMS0"></script>
     <script>
     window.dataLayer = window.dataLayer || [];
@@ -29,20 +29,20 @@
             justify-content: center;
             align-items: center;
             color: white;
-            font-family: 'Roboto', Arial, sans-serif; 
+            font-family: 'Roboto', Arial, sans-serif;
             z-index: 10;
         }
         #mainMenu h1 {
-            font-family: 'Bebas Neue', sans-serif; 
-            font-size: 60px; 
-            margin: 0; 
-            line-height: 1; 
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 60px;
+            margin: 0;
+            line-height: 1;
             text-align: center;
         }
         #mainMenu input {
             padding: 10px;
             font-size: 18px;
-            margin: 10px 0; 
+            margin: 10px 0;
             width: 200px;
             font-family: 'Roboto', sans-serif;
         }
@@ -61,13 +61,13 @@
             font-size: 12px;
             margin: 5px 0;
             text-align: center;
-            max-width: 400px; 
+            max-width: 400px;
         }
 
 
         
         #mainMenu .controls strong, #mainMenu .power-ups strong {
-            color: cyan; 
+            color: cyan;
 
         }
         #mainMenu .sponsor {
@@ -75,10 +75,10 @@
             bottom: 20px;
             font-size: 20px;
             
-            font-family: 'Bebas Neue', sans-serif; 
+            font-family: 'Bebas Neue', sans-serif;
         }
         #mainMenu .sponsor a {
-            color: #00ffff; 
+            color: #00ffff;
             text-decoration: none;
         }
         #mainMenu .sponsor a:hover {
@@ -88,17 +88,17 @@
         #mainMenu .credit {
             font-size: 14px;
             font-family: 'Roboto', sans-serif;
-            margin: 5px 0; 
+            margin: 5px 0;
         }
         #mainMenu .credit a.author {
-            color: #00ffff; 
+            color: #00ffff;
             text-decoration: none;
         }
         #mainMenu .credit a.author:hover {
-            text-decoration: underline; 
+            text-decoration: underline;
         }
         #mainMenu .credit span {
-            color: white; 
+            color: white;
         }
 
 
@@ -110,17 +110,17 @@
             font-family: Arial;
             display: flex;
             align-items: center;
-            margin-bottom: 20px; 
+            margin-bottom: 20px;
         }
 
         #scoreDisplay { 
-            margin-right: 30px; 
+            margin-right: 30px;
         }
 
         #livesDisplay { 
             display: flex; 
             align-items: center;
-            margin-left: 20px; 
+            margin-left: 20px;
         }
 
         .heart {
@@ -128,7 +128,7 @@
             height: 20px;
             background: red;
             position: relative;
-            margin-right: 15px; 
+            margin-right: 15px;
             transform: rotate(-45deg);
         }
 
@@ -237,7 +237,7 @@
         }
     </style>
 </head>
-<body onload="document.body.focus();">
+    <body>
     <div id="mainMenu">
         <h1>Ultra Hyper Radical<br>Space Squadron</h1>
 
@@ -276,7 +276,7 @@
         <br>
         <div id="livesDisplay"></div>
     </div>
-    
+
     <div id="bars" style="display: none;">
         <br>
         <br>
@@ -300,39 +300,31 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
     <script>
 
-    const  scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+    // DEFINE GLOBAL VARIABLES
+        // Scene setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
 
-
+        // Static background
     const textureLoader = new THREE.TextureLoader();
-    textureLoader.load('textures/space_background.jpg', (texture) => {
+    textureLoader.load('textures/starfield.jpg', (texture) => {
         scene.background = texture;
     });
 
-
-    const universeGeometry = new THREE.PlaneGeometry(100, 100); // Big plane
-    const universeMaterial = new THREE.MeshBasicMaterial({
-        map: textureLoader.load('textures/starfield.png'), // Starfield texture
-        transparent: true, // Allow background to show through
-        side: THREE.DoubleSide // Visible from both sides
-    });
-    const universePlane = new THREE.Mesh(universeGeometry, universeMaterial);
-    universePlane.position.z = -50; // Behind everything
-    scene.add(universePlane);
-
-
+        
+        // toggle tags
         let showEnemyTags = false;
 
-
+        // Track variables
         const trackLength = 1000;
         let trackPosition = 0;
         let baseTrackSpeed = 0.1;
         let currentTrackSpeed = baseTrackSpeed;
 
-
+        // Spaceship
         const spaceshipGroup = new THREE.Group();
         const mainBodyGeometry = new THREE.ConeGeometry(0.5, 2, 3);
         const mainBodyMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
@@ -355,12 +347,12 @@
         const cockpit = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
         cockpit.position.set(0, 0.3, -0.5);
         spaceshipGroup.add(cockpit);
-
+        // Spaceship ends here
 
         scene.add(spaceshipGroup);
         spaceshipGroup.position.z = -5;
 
-
+        // Flying trails (updated as per your snippet)
         let leftTrail = null, rightTrail = null;
         function createTrails() {
             const trailMaterial = new THREE.LineBasicMaterial({ color: 0xffff00 });
@@ -376,23 +368,23 @@
         }
         createTrails();
 
-
+        // Camera setup
         camera.position.set(0, 2, 5);
         camera.lookAt(0, 0, -100);
 
-
+        // Camera shake variables
         let shakeTimer = 0;
         let shakeIntensity = 0;
         
-
+        // Spaceship boost shake variables
         let boostShakeTimer = 0;
         let boostShakeIntensity = 0;
 
-
+        // Limit zones for camera behavior
         const firstZoneLimit = 5;
         const secondZoneLimit = 9;
 
-
+        // Game variables
         let score = 0;
         let lives = 3;
         let gameOver = false;
@@ -404,7 +396,7 @@
         let playerName = '';
         let highScore = localStorage.getItem('highScore') || 0;
 
-
+        // Brake and Boost variables
         let brakeBar = 100;
         let boostBar = 100;
         let isBraking = false;
@@ -412,7 +404,7 @@
         let brakeRegenDelay = 0;
         let boostRegenDelay = 0;
 
-
+        //  roll variables
         let rollActive = false;
         let rollCooldown = 0;
         let rollAngle = 0;
@@ -428,18 +420,19 @@
         const billboards = [];
         const sideShips = [];
 
-
+        //Boss change color
         let bossHitTimer = 0;
         let bossHitCount = 0;
         const bossOriginalColor = 0x0000ff; // Original boss color
         const bossHitColor = 0xff0000; // Red when hit
 
-
+        
+        // Existing sounds
 
         const enemyDestroySound = new Audio('');
         const playerHitSound = new Audio('');
 
-
+        // New Sounds
         const powerUpSound = new Audio(''); // Power-up pickup
         const playerDestroySound = new Audio(''); // Player destroyed
         const shootSound = new Audio(''); // Shooting
@@ -449,12 +442,12 @@
         const backgroundMusic = new Audio(''); // Looping game music
         backgroundMusic.loop = true; // Loop the background track
 
-
+        // Raycaster for mouse aiming
         const raycaster = new THREE.Raycaster();
         const mouse = new THREE.Vector2();
         let mouseWorldPos = new THREE.Vector3();
 
-
+        // Crosshair setup
         const crosshair = document.getElementById('crosshair');
         const outerCrosshair = document.getElementById('outerCrosshair');
         let crosshairX = 0, crosshairY = 0;
@@ -473,8 +466,8 @@
             raycaster.ray.intersectPlane(plane, mouseWorldPos);
         });
         
-
-
+        // Update outer crosshair with delay
+        // The highest the crosshair delay multiplier, diminish the delay
         function updateOuterCrosshair() {
             outerCrosshairX += (crosshairX - outerCrosshairX) * 0.3;
             outerCrosshairY += (crosshairY - outerCrosshairY) * 0.4;
@@ -482,7 +475,7 @@
             outerCrosshair.style.top = outerCrosshairY + 'px';
         }
 
-
+        // Movement and rotation controls
         const keys = { w: false, a: false, s: false, d: false, space: false, q: false, e: false, c: false };
         document.addEventListener('keydown', (event) => {
             if (event.key === 'w') keys.w = true;
@@ -505,7 +498,7 @@
             if (event.key === 'c') keys.c = false;
         });
 
-
+        // Variables for smooth rotation
         let targetPitch = 0;
         let targetYaw = 0;
         let currentPitch = 0;
@@ -515,24 +508,22 @@
         let targetMovementPitch = 0;
         let targetMovementRoll = 0;
 
-
+        //Billboards
         let billboardTimer = 0; // Tracks time since last spawn
         let billboardCount = 0; // Tracks how many pairs spawned
         const maxBillboards = 10; // Still 10 pairs (20 total)
 
-
+        // Movement speeds
         const normalSpeed = 0.2;
         const quickSpeed = 0.4;
         const maxAngleNormal = Math.PI / 4;
         const maxAngleQuick = Math.PI / 2;
 
-
+        // Brake on right click, shoot on left click
         document.addEventListener('contextmenu', (event) => event.preventDefault());
         document.addEventListener('mousedown', (event) => {
             if (event.button === 2) isBraking = true;
             if (event.button === 0 && !gameOver) {
-                
-
                 raycaster.setFromCamera(mouse, camera);
                 const direction = raycaster.ray.direction.clone().normalize();
                 const createProjectile = (offsetX = 0) => {
@@ -547,9 +538,6 @@
                     scene.add(projectile);
                     projectiles.push(projectile);
                 };
-                shootSound.pause(); // Stop current playback
-                shootSound.currentTime = 0; // Reset to start
-                shootSound.play() // REVISAR - NO FUNCIONA COMPLETAMENTE
                 createProjectile(0);
                 if (doubleShotActive) createProjectile(0.5);
             }
@@ -558,7 +546,7 @@
             if (event.button === 2) isBraking = false;
         });
 
-
+// New billboard click handlers (add these below)
         let holdTimer = null
 
         document.addEventListener('mousedown', (event) => {
@@ -590,7 +578,7 @@
             }
         });
 
-
+        // Main menu logic
         const mainMenu = document.getElementById('mainMenu');
         const playerNameInput = document.getElementById('playerNameInput');
         const nameError = document.getElementById('nameError');
@@ -622,14 +610,14 @@
             gameOver = false;
             animate();
 
-
-
+// REVISAR - UNCOMMENT THIS FOR BACKGROUND MUSICA
+            // backgroundMusic.play();
         }
 
         function restartGame() {
             document.getElementById('gameOverMenu').style.display = 'none';
 
-
+            // Reset core game variables
             score = 0;
             lives = 3;
             trackPosition = 0;
@@ -649,33 +637,27 @@
             boostShakeIntensity = 0;
             gameOver = false; // Ensure gameOver is reset
             
-
+            // Reset spaceship position and rotation
             spaceshipGroup.position.set(0, 0, -5);
             spaceshipGroup.rotation.set(0, 0, 0);
             
-
+            // Clear all game objects
             destroyAllTagsOnRestart();
 
-
+            // Clear projectiles array
             projectiles.forEach(projectile => scene.remove(projectile));
             projectiles.length = 0;
             explosionParticles.forEach(particle => scene.remove(particle));
             explosionParticles.length = 0;
 
-
+            // Ensure boss is removed
             if (boss) {
                 scene.remove(boss);
                 boss = null;
                 weakSpots = [];
             }
 
-
-            const healthBar = document.getElementById('bossHealthBar');
-            if (healthBar && healthBar.parentNode) document.body.removeChild(healthBar);
-            const bossLabel = document.querySelector('div[style*="top: 35px"]'); // Matches the label’s inline style
-            if (bossLabel && bossLabel.parentNode) document.body.removeChild(bossLabel);
-
-
+            // Reset animation-related variables
             currentPitch = 0;
             currentYaw = 0;
             movementPitch = 0;
@@ -683,12 +665,12 @@
             targetMovementPitch = 0;
             targetMovementRoll = 0;
 
-
+            // Update UI and restart
             updateUI();
             animate(); // Restart the animation loop
         }
 
-
+        // Scene elements
         const groundGeometry = new THREE.PlaneGeometry(100, trackLength * 2);
         const groundMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
         const ground = new THREE.Mesh(groundGeometry, groundMaterial);
@@ -696,10 +678,22 @@
         ground.position.y = -15;
         scene.add(ground);
 
-
+        // function spawnMountain() {
+        //     const mountainGeometry = new THREE.ConeGeometry(2, 5, 8);
+        //     const mountainMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 });
+        //     const mountain = new THREE.Mesh(mountainGeometry, mountainMaterial);
+        //     mountain.position.set(
+        //         Math.random() * 40 - 20,
+        //         -10,
+        //         -trackPosition - 50
+        //     );
+        //     scene.add(mountain);
+        //     mountains.push(mountain);
+        //     createNameTag(mountain, `Mountain ${mountains.length}`);
+        // }
 
         function spawnBillboard() {
-
+            
             const textureLoader = new THREE.TextureLoader();
             const billboardTexture = textureLoader.load('textures/billboard.png');
 
@@ -723,7 +717,7 @@
             );
             scene.add(billboard);
             billboards.push(billboard);
-            createNameTag(billboard, `Billboard ${billboards.length}`);
+            // createNameTag(billboard, `Billboard ${billboards.length}`);
         }
 
         function spawnSideShip() {
@@ -738,10 +732,10 @@
             );
             scene.add(ship);
             sideShips.push(ship);
-            createNameTag(ship, `Ship ${sideShips.length}`);
+            // createNameTag(ship, `Ship ${sideShips.length}`);
         }
 
-
+        // Spawn enemies
         function spawnEnemy(type = 'default') {
             let enemyGeometry, enemyMaterial, enemy;
             if (type === 'purple') {
@@ -749,80 +743,58 @@
                 enemy.position.set(Math.random() * 20 - 10, Math.random() * 20 - 10, -trackPosition - 50);
                 enemy.health = 1;
                 enemy.userData.type = 'purple';
-                if (showEnemyTags) createNameTag(enemy, `${type.charAt(0).toUpperCase() + type.slice(1)} ${enemies.length + 1}`);
+                // createNameTag(enemy, `Purple ${enemies.length + 1}`);
             } else if (type === 'green') {
-                enemy = createSpaceshipEnemy(0x00ff00);
+                enemy = createSpaceshipEnemy(0x00ff00); // Green
                 enemy.position.set(Math.random() * 20 - 10, Math.random() * 20 - 10, -trackPosition - 20);
                 enemy.health = 1;
                 enemy.userData.type = 'green';
-                if (showEnemyTags) createNameTag(enemy, `${type.charAt(0).toUpperCase() + type.slice(1)} ${enemies.length + 1}`);
+                // createNameTag(enemy, `Green ${enemies.length + 1}`);
             } else if (type === 'pink') {
-                enemy = createSpaceshipEnemy(0xff69b4);
+                enemy = createSpaceshipEnemy(0xff69b4); // Pink
                 const side = Math.random() < 0.5 ? -15 : 15;
                 enemy.position.set(side, Math.random() * 20 - 10, spaceshipGroup.position.z + 10);
                 enemy.health = 1;
                 enemy.userData.type = 'pink';
                 enemy.userData.state = 'movingToFront';
-                if (showEnemyTags) createNameTag(enemy, `${type.charAt(0).toUpperCase() + type.slice(1)} ${enemies.length + 1}`);
+                // createNameTag(enemy, `Pink ${enemies.length + 1}`);
             } else if (type === 'orange') {
-                enemy = createSpaceshipEnemy(0xffa500);
+                enemy = createSpaceshipEnemy(0xffa500); // Orange
                 enemy.position.set(Math.random() * 20 - 10, Math.random() * 20 - 10, -trackPosition - 50);
                 enemy.health = 1;
                 enemy.userData.type = 'orange';
                 enemy.userData.angle = Math.random() * Math.PI * 2;
-                if (showEnemyTags) createNameTag(enemy, `${type.charAt(0).toUpperCase() + type.slice(1)} ${enemies.length + 1}`);
+                // createNameTag(enemy, `Orange ${enemies.length + 1}`);
             } else if (type === 'cyan') {
-                enemy = createSpaceshipEnemy(0x00ffff);
+                enemy = createSpaceshipEnemy(0x00ffff); // Cyan
                 enemy.position.set(Math.random() * 20 - 10, Math.random() * 20 - 10, -trackPosition - 50);
                 enemy.health = 1;
                 enemy.userData.type = 'cyan';
                 enemy.userData.angle = Math.random() * Math.PI * 2;
-                if (showEnemyTags) createNameTag(enemy, `${type.charAt(0).toUpperCase() + type.slice(1)} ${enemies.length + 1}`);
+                // createNameTag(enemy, `Cyan ${enemies.length + 1}`);
             } else {
-                enemy = createSpaceshipEnemy(0xff0000);
+                enemy = createSpaceshipEnemy(0xff0000); // Default (Red)
                 enemy.position.set(Math.random() * 20 - 10, Math.random() * 20 - 10, -trackPosition - 50);
                 enemy.health = 1;
                 enemy.userData.type = 'default';
-                if (showEnemyTags) createNameTag(enemy, `${type.charAt(0).toUpperCase() + type.slice(1)} ${enemies.length + 1}`);
+                // createNameTag(enemy, `Enemy ${enemies.length + 1}`);
             }
             scene.add(enemy);
             enemies.push(enemy);
         }
 
-
-        function explodeEnemy(enemy) {
-            for (let i = 0; i < 10; i++) {
-                const particleGeometry = new THREE.SphereGeometry(0.1, 8, 8);
-                const particleMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-                const particle = new THREE.Mesh(particleGeometry, particleMaterial);
-                particle.position.copy(enemy.position);
-                const velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 1,
-                    (Math.random() - 0.5) * 1,
-                    (Math.random() - 0.5) * 1
-                ).normalize().multiplyScalar(Math.random() * 1);
-                particle.userData.velocity = velocity;
-                particle.userData.isCosmetic = true; // Mark as non-damaging
-                scene.add(particle);
-                explosionParticles.push(particle); // Use separate array
-            }
-        }
-
-
-        
-
-
+        // Helper function to create a spaceship enemy
         function createSpaceshipEnemy(color) {
             const group = new THREE.Group();
             
-
+            // Body (elongated cone)
             const bodyGeometry = new THREE.ConeGeometry(0.4, 1.5, 8);
             const bodyMaterial = new THREE.MeshBasicMaterial({ color });
             const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
             body.rotation.x = Math.PI; // Point forward
             group.add(body);
 
-
+            // Wings (thin boxes)
             const wingGeometry = new THREE.BoxGeometry(1.2, 0.1, 0.5);
             const wingMaterial = new THREE.MeshBasicMaterial({ color: 0xaaaaaa }); // Grey wings
             const leftWing = new THREE.Mesh(wingGeometry, wingMaterial);
@@ -833,7 +805,7 @@
             rightWing.rotation.z = -Math.PI / 6;
             group.add(leftWing, rightWing);
 
-
+            // Cockpit (small sphere)
             const cockpitGeometry = new THREE.SphereGeometry(0.2, 8, 8);
             const cockpitMaterial = new THREE.MeshBasicMaterial({ color: 0x000000 }); // Black cockpit
             const cockpit = new THREE.Mesh(cockpitGeometry, cockpitMaterial);
@@ -843,17 +815,17 @@
             return group;
         }
                 
-
+        // Helper function to create a turret enemy (purple)
         function createTurretEnemy() {
             const group = new THREE.Group();
 
-
+            // Base (cylinder)
             const baseGeometry = new THREE.CylinderGeometry(0.8, 0.8, 0.5, 16);
             const baseMaterial = new THREE.MeshBasicMaterial({ color: 0x800080 }); // Purple
             const base = new THREE.Mesh(baseGeometry, baseMaterial);
             group.add(base);
 
-
+            // Barrel (thin box)
             const barrelGeometry = new THREE.BoxGeometry(0.2, 0.2, 1.5);
             const barrelMaterial = new THREE.MeshBasicMaterial({ color: 0x555555 }); // Dark grey
             const barrel = new THREE.Mesh(barrelGeometry, barrelMaterial);
@@ -863,7 +835,7 @@
             return group;
         }
 
-
+        // Name tags
         function createNameTag(object, name) {
             const div = document.createElement('div');
             div.className = 'name-tag';
@@ -873,7 +845,7 @@
         }
 
         function updateNameTags() {
-            [].forEach(collection => {
+            [enemies, mountains, billboards, sideShips].forEach(collection => {
                 collection.forEach(obj => {
                     const pos = new THREE.Vector3();
                     obj.getWorldPosition(pos);
@@ -887,7 +859,7 @@
             });
         }
 
-
+        // Spawn obstacles
         function spawnObstacle() {
             const obstacleGeometry = new THREE.BoxGeometry(2, 5, 2);
             const obstacleMaterial = new THREE.MeshBasicMaterial({ color: 0x888888 });
@@ -900,10 +872,10 @@
             );
             scene.add(obstacle);
             obstacles.push(obstacle);
-            createNameTag(obstacle, `Obstacle ${obstacles.length}`);
+            // createNameTag(obstacle, `Obstacle ${obstacles.length}`);
         }
 
-
+        // Spawn power-ups
         function spawnPowerUp(type) {
             let powerUp;
             if (type === 'extraLife') {
@@ -918,7 +890,7 @@
                 const heartMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
                 powerUp = new THREE.Mesh(heartGeometry, heartMaterial);
             } else {
-
+// Triangular prism for doubleShot
                 const prismGeometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 3); // 3 sides = triangular prism
                 const prismMaterial = new THREE.MeshBasicMaterial({ color: 0xffd700 }); // Gold color
                 powerUp = new THREE.Mesh(prismGeometry, prismMaterial);
@@ -929,20 +901,20 @@
             powerUps.push(powerUp);
         }
 
-
+        // Spawn boss with weak spots
         let boss = null;
         let weakSpots = [];
 
         function spawnBoss() {
             const group = new THREE.Group();
 
-
+// Body (box)
             const bodyGeometry = new THREE.BoxGeometry(3, 4, 2);
             const bodyMaterial = new THREE.MeshBasicMaterial({ color: bossOriginalColor });
             const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
             group.add(body);
 
-
+// Arms (cylinders)
             const armGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 8);
             const armMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 });
             const leftArm = new THREE.Mesh(armGeometry, armMaterial);
@@ -953,14 +925,14 @@
             rightArm.rotation.z = -Math.PI / 4;
             group.add(leftArm, rightArm);
 
-
+// Head (sphere)
             const headGeometry = new THREE.SphereGeometry(1, 16, 16);
             const headMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
             const head = new THREE.Mesh(headGeometry, headMaterial);
             head.position.set(0, 2.5, 0);
             group.add(head);
 
-
+// Eyes (for shooting)
             const eyeGeometry = new THREE.SphereGeometry(0.2, 8, 8);
             const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
             const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
@@ -975,8 +947,8 @@
             scene.add(group);
             boss = group;
             bossSpawned = true;
-
-
+            
+// Weak spots
             const weakSpotGeometry = new THREE.SphereGeometry(0.5, 8, 8);
             const weakSpotMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
             for (let i = 0; i < 3; i++) {
@@ -988,8 +960,8 @@
                 group.add(weakSpot);
                 weakSpots.push(weakSpot);
             }
-
-
+        
+// Health bar
             const healthBar = document.createElement('div');
             healthBar.id = 'bossHealthBar';
             healthBar.style.position = 'absolute';
@@ -1041,19 +1013,19 @@
             boss = null;
             weakSpots = [];
             score += 100;
-            setTimeout(() => {
-                document.getElementById('gameOverMenu').style.display = 'flex';
-                document.getElementById('gameOverMenu').querySelector('h2').textContent = "Level Completed!";
-                document.getElementById('finalScore').textContent = score;
-                if (score > highScore) {
-                    highScore = score;
-                    localStorage.setItem('highScore', highScore);
-                    localStorage.setItem('highScoreName', playerName);
-                }
-            }, 5000); // 5-second delay
+setTimeout(() => {
+            document.getElementById('gameOverMenu').style.display = 'flex';
+            document.getElementById('gameOverMenu').querySelector('h2').textContent = "Level Completed!";
+            document.getElementById('finalScore').textContent = score;
+                        if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('highScore', highScore);
+                localStorage.setItem('highScoreName', playerName);
+            }
+}, 2000); // 2-second delay
         }
 
-
+        // Enemy shooting
         function enemyShoot(enemy) {
             const projectileGeometry = new THREE.SphereGeometry(0.1, 8, 8);
             const projectileMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
@@ -1072,13 +1044,13 @@
             enemyProjectiles.push(projectile);
         }
 
-
+        // Camera shake function
         function triggerCameraShake(intensity, duration) {
             shakeIntensity = intensity;
             shakeTimer = duration;
         }
 
-
+        // Display power-up message
         function displayPowerUpMessage(message) {
             const messageDiv = document.getElementById('powerUpMessage');
             messageDiv.textContent = message;
@@ -1087,7 +1059,7 @@
             }, 3000);
         }
 
-
+        // Update UI
         function updateUI() {
             document.getElementById('score').textContent = score;
             const livesDisplay = document.getElementById('livesDisplay');
@@ -1101,18 +1073,16 @@
             document.getElementById('boostBarFill').style.width = `${Math.floor(boostBar)}%`;
         }
 
-
+        // Collision detection
         function checkCollisions() {
             projectiles.forEach((projectile, pIndex) => {
-                if (projectile.userData.isCosmetic) return; // Skip explosion particles
                 enemies.forEach((enemy, eIndex) => {
                     const distance = projectile.position.distanceTo(enemy.position);
                     if (distance < 3) {
                         enemy.health -= 1;
                         if (enemy.health <= 0) {
-
                             scene.remove(enemy);
-                            document.body.removeChild(enemy.userData.nameTag);
+                            // if (enemy.userData.nameTag) document.body.removeChild(enemy.userData.nameTag);
                             enemies.splice(eIndex, 1);
                             score += 10;
                             enemyDestroySound.play();
@@ -1126,32 +1096,34 @@
                 if (boss) {
                     const distanceToBoss = projectile.position.distanceTo(boss.position);
                     let hitWeakSpot = false;
-                    weakSpots.forEach((weakSpot, wIndex) => {
-                        const worldPos = weakSpot.getWorldPosition(new THREE.Vector3());
-                        const distanceToWeakSpot = projectile.position.distanceTo(worldPos);
-                        if (distanceToWeakSpot < 0.6) {
-                            boss.health -= 2;
-                            hitWeakSpot = true;
-                            bossHitTimer = 0.5;
-                            bossHitCount = 0;
-                            boss.material.color.setHex(bossHitColor);
-                            scene.remove(projectile);
-                            projectiles.splice(pIndex, 1);
-                            enemyDestroySound.play();
-                            triggerCameraShake(0.1, 0.2);
-                        }
-                    });
+                    // weakSpots.forEach((weakSpot, wIndex) => {
+                    //     const worldPos = weakSpot.getWorldPosition(new THREE.Vector3());
+                    //     const distanceToWeakSpot = projectile.position.distanceTo(worldPos);
+                    //     if (distanceToWeakSpot < 0.6) {
+                    //         boss.health -= 2;
+                    //         hitWeakSpot = true;
+                    //         bossHitTimer = 0.5; // Start color change timer
+                    //         bossHitCount = 0; // Reset hit count
+                    //         boss.material.color.setHex(bossHitColor); // Change to hit color
+                    //         scene.remove(projectile);
+                    //         projectiles.splice(pIndex, 1);
+                    //         enemyDestroySound.play();
+                    //         triggerCameraShake(0.1, 0.2);
+                    //     }
+                    // });
                     if (!hitWeakSpot && distanceToBoss < 3) {
                         boss.health -= 1;
-                        bossHitTimer = 0.5;
-                        bossHitCount = 0;
-                        boss.material.color.setHex(bossHitColor);
+                        bossHitTimer = 0.5; // Start color change timer
+                        bossHitCount = 0; // Reset hit count
+                        boss.material.color.setHex(bossHitColor); // Change to hit color
                         scene.remove(projectile);
                         projectiles.splice(pIndex, 1);
                         enemyDestroySound.play();
                         triggerCameraShake(0.1, 0.2);
                     }
-                    if (boss.health <= 0) explodeBoss();
+                    if (boss.health <= 0) {
+                        explodeBoss();
+                    }
                 }
             });
 
@@ -1200,7 +1172,7 @@
                     }
                 });
 
-
+                // Ground collision
                 if (spaceshipGroup.position.y < -14) {
                     lives -= 1;
                     invincibilityTimer = 3;
@@ -1220,29 +1192,28 @@
                     }
                 }
 
-
+                // Enemy collision with player
                 enemies.forEach((enemy, eIndex) => {
                     const distance = spaceshipGroup.position.distanceTo(enemy.position);
                     if (distance < 1) {
                         lives -= 1;
                         invincibilityTimer = 3;
                         doubleShotActive = false;
-
+                        // explodeEnemy(enemy); // Explode on contact
                         scene.remove(enemy);
                         enemies.splice(eIndex, 1);
-                        if (enemy.userData.nameTag) document.body.removeChild(enemy.userData.nameTag);
+                        // if (enemy.userData.nameTag) document.body.removeChild(enemy.userData.nameTag);
                         playerHitSound.play();
                         triggerCameraShake(0.3, 0.5);
                         if (lives <= 0) {
                             gameOver = true;
-
                             document.getElementById('finalScore').textContent = score;
-                                document.getElementById('gameOverMenu').style.display = 'flex';
-                                if (score > highScore) {
-                                    highScore = score;
-                                    localStorage.setItem('highScore', highScore);
-                                    localStorage.setItem('highScoreName', playerName);
-                                }
+                            document.getElementById('gameOverMenu').style.display = 'flex';
+                            if (score > highScore) {
+                                highScore = score;
+                                localStorage.setItem('highScore', highScore);
+                                localStorage.setItem('highScoreName', playerName);
+                            }
                         }
                     }
                 });
@@ -1263,51 +1234,28 @@
                         }
                     } else if (powerUp.userData.type === 'doubleShot') {
                         doubleShotActive = true;
-                        displayPowerUpMessage('Double Laser!');
+                        displayPowerUpMessage('Double Shot!');
                     }
-                    powerUpSound.play();
                     scene.remove(powerUp);
                     powerUps.splice(pIndex, 1);
                 }
             });
         }
 
-
-
-        function explodePlayer() {
-            for (let i = 0; i < 15; i++) {
-                const particle = new THREE.Mesh(
-                    new THREE.SphereGeometry(0.15, 8, 8),
-                    new THREE.MeshBasicMaterial({ color: 0xffff00 })
-                );
-                particle.position.copy(spaceshipGroup.position);
-                const velocity = new THREE.Vector3(
-                    (Math.random() - 0.5) * 1.5,
-                    (Math.random() - 0.5) * 1.5,
-                    (Math.random() - 0.5) * 1.5
-                ).normalize().multiplyScalar(Math.random() * 1.5);
-                particle.userData.velocity = velocity;
-                scene.add(particle);
-                projectiles.push(particle);
-            }
-            playerDestroySound.play();
-            spaceshipGroup.visible = false; // Hide ship during explosion
-        }
-
         
-
-
+        // REVISAR ESTA FUNCION 2
+        // Despawn Enemies Out of bounds and at restart
         function despawnEnemiesOutOfBounds(restart) {
             if (restart) {
-
+                // Remove all enemies regardless of position during restart
                 while (enemies.length > 0) {
                     const enemy = enemies[0];
                     scene.remove(enemy);
-                    if (enemy.userData.nameTag) document.body.removeChild(enemy.userData.nameTag);
+                    // if (enemy.userData.nameTag) document.body.removeChild(enemy.userData.nameTag);
                     enemies.splice(0, 1);
                 }
             } else {
-
+                // Normal out-of-bounds check during gameplay
                 let i = enemies.length;
                 while (i--) {
                     const enemy = enemies[i];
@@ -1317,41 +1265,39 @@
                         Math.abs(enemy.position.y - spaceshipGroup.position.y) > 20
                     ) {
                         scene.remove(enemy);
-                        if (enemy.userData.nameTag) document.body.removeChild(enemy.userData.nameTag);
+                        // if (enemy.userData.nameTag) document.body.removeChild(enemy.userData.nameTag);
                         enemies.splice(i, 1);
                     }
                 }
             }
         }
 
-
-
-
+        // REVISAR ESTA FUNCION 1
 
         function destroyAllTagsOnRestart() {
-
+            // Helper function to clean up a collection
             function cleanCollection(collection, collectionName) {
                 console.log(`Cleaning collection: ${collectionName}, Initial length: ${collection.length}`);
                 let index = collection.length;
                 while (index--) {
                     const item = collection[index];
                     try {
-
+                        // Remove from scene
                         scene.remove(item);
-
-                        if (item.userData && item.userData.nameTag && item.userData.nameTag.parentNode) {
-                            document.body.removeChild(item.userData.nameTag);
-                        }
+                        // Remove name tag if it exists
+                        // if (item.userData && item.userData.nameTag && item.userData.nameTag.parentNode) {
+                        //     document.body.removeChild(item.userData.nameTag);
+                        // }
                     } catch (error) {
                         console.error(`Error cleaning item in ${collectionName}:`, error);
                     }
-
+                    // Remove from array
                     collection.splice(index, 1);
                 }
                 console.log(`After cleaning ${collectionName}, length: ${collection.length}`);
             }
             
-
+            // Clean all collections that might have name tags
             cleanCollection(enemies, "enemies");
             cleanCollection(mountains, "mountains");
             cleanCollection(billboards, "billboards");
@@ -1360,17 +1306,13 @@
             cleanCollection(powerUps, "powerUps");
         }
 
-
+        // Game loop
         function animate() {
             if (gameOver) return;
 
             requestAnimationFrame(animate);
 
-
-        universeMaterial.map.offset.x += 0.0005; // Horizontal drift
-        universeMaterial.map.offset.y += 0.0002; // Vertical drift
-
-
+            // Update track speed based on brake/boost
             currentTrackSpeed = baseTrackSpeed;
             if (isBraking && brakeBar > 0) {
                 currentTrackSpeed *= 0.5;
@@ -1382,7 +1324,7 @@
                 boostRegenDelay = boostBar === 0 ? 2 : 0;
                 leftTrail.visible = true;
                 rightTrail.visible = true;
-
+                // Activate boost shake
                 boostShakeTimer = 0.1;
                 boostShakeIntensity = 0.05;
             } else {
@@ -1392,7 +1334,7 @@
                 boostShakeIntensity = 0;
             }
 
-
+            // Regenerate brake and boost bars
             if (!isBraking) {
                 if (brakeRegenDelay > 0) brakeRegenDelay -= 1 / 60;
                 else brakeBar = Math.min(100, brakeBar + 0.5);
@@ -1402,7 +1344,7 @@
                 else boostBar = Math.min(100, boostBar + 0.5);
             }
 
-
+            // Roll logic
             if (keys.c && !rollActive && rollCooldown <= 0) {
                 rollActive = true;
                 rollAngle = 0;
@@ -1417,7 +1359,7 @@
             if (rollActive) {
                 rollAngle += 0.3 * rollDirection;
                 spaceshipGroup.rotation.z = movementRoll + Math.sin(rollAngle) * Math.PI;
-
+                
                 if (rollAngle >= 4 * Math.PI || rollAngle <= -4 * Math.PI) {
                     rollActive = false;
                     rollAngle = 0;
@@ -1429,11 +1371,11 @@
             }
             if (rollCooldown > 0) rollCooldown -= 1 / 60;
 
-
+            // Move spaceship forward
             trackPosition += currentTrackSpeed;
             spaceshipGroup.position.z = -trackPosition;
 
-
+            // Apply boost shake to spaceship
             if (boostShakeTimer > 0) {
                 boostShakeTimer -= 1 / 60;
                 const shakeOffset = new THREE.Vector3(
@@ -1444,7 +1386,7 @@
                 spaceshipGroup.position.add(shakeOffset);
             }
 
-
+            // Spaceship movement with increased screen limits
             const maxX = 20 - 0.25;
             const minX = -20 + 0.25;
             const maxY = 20 - 0.25;
@@ -1463,7 +1405,7 @@
             if (keys.w && spaceshipGroup.position.y < maxY) spaceshipGroup.position.y += normalSpeed;
             if (keys.s && spaceshipGroup.position.y > minY) spaceshipGroup.position.y -= normalSpeed;
 
-
+            // Calculate movement-based rotation (pitch and roll)
             targetMovementPitch = 0;
             targetMovementRoll = 0;
 
@@ -1500,7 +1442,7 @@
                 }
             }
 
-
+            // Update camera based on limit zones
             const distanceFromCenter = Math.max(Math.abs(spaceshipGroup.position.x), Math.abs(spaceshipGroup.position.y));
             let targetCameraPos = new THREE.Vector3(0, 2, spaceshipGroup.position.z + 5);
 
@@ -1524,7 +1466,7 @@
             camera.position.lerp(targetCameraPos, 0.1);
             camera.lookAt(camera.position.x, camera.position.y, camera.position.z - 100);
 
-
+            // Camera shake
             if (shakeTimer > 0) {
                 shakeTimer -= 1 / 60;
                 const shakeOffset = new THREE.Vector3(
@@ -1537,7 +1479,7 @@
                 shakeIntensity = 0;
             }
 
-
+            // Spawn enemies, obstacles, and power-ups
             const maxEnemies = 10;
             if (enemies.length < maxEnemies && Math.random() < 0.02 && trackPosition < trackLength - 100) {
                 const type = Math.random();
@@ -1554,45 +1496,35 @@
                 const type = Math.random() < 0.5 ? 'extraLife' : 'doubleShot';
                 spawnPowerUp(type);
             }
+            // if (Math.random() < 0.005 && trackPosition < trackLength - 100) spawnMountain();
             if (Math.random() < 0.005 && trackPosition < trackLength - 100) spawnBillboard();
             if (Math.random() < 0.005 && trackPosition < trackLength - 100) spawnSideShip();
 
             if (trackPosition >= trackLength - 100 && !bossSpawned && lives > 0) {spawnBoss()};
-
+            // Reset justRestarted flag after trackPosition advances a bit
             if (justRestarted && trackPosition > 10) { // Small buffer to ensure game loop stabilizes
                             justRestarted = false;
                         }
-
+            
+            // Move projectiles MODIFIED FOR TRACK ENEMIES WITH CLICK
             projectiles.forEach((projectile, index) => {
             if (projectile.userData.direction) {
-
+                    // Normal projectile (from player or enemy shooting)
                 projectile.position.add(projectile.userData.direction.clone().multiplyScalar(projectile.userData.velocity));
             } else if (projectile.userData.velocity) {
-
+                    // Boss explosion particle (has velocity vector but no direction)
                     projectile.position.add(projectile.userData.velocity.clone());
                 }
-
+                // Remove projectile if it’s out of bounds
                 if (projectile.position.z < -trackPosition - 50 || Math.abs(projectile.position.x) > 50 || Math.abs(projectile.position.y) > 50) {
                     scene.remove(projectile);
                     projectiles.splice(index, 1);
                 }
             });
 
-
-
-            explosionParticles.forEach((particle, index) => {
-                if (particle.userData.velocity) {
-                    particle.position.add(particle.userData.velocity.clone());
-                }
-                if (particle.position.z < -trackPosition - 50 || Math.abs(particle.position.x) > 50 || Math.abs(particle.position.y) > 50) {
-                    scene.remove(particle);
-                    explosionParticles.splice(index, 1);
-                }
-            });
-
-
-
-
+            // Enemy behavior
+            // Enemy behavior
+            // Enemy behavior
             enemies.forEach((enemy) => {
                 if (enemy.userData.type === 'purple' && Math.random() < 0.005) {
                     enemyShoot(enemy);
@@ -1629,7 +1561,7 @@
                     if (distanceToTarget > 1) {
                         enemy.position.add(directionToTarget.multiplyScalar(0.1));
                     }
-
+                    // Shoot at player with 0.5% chance per frame
                     if (Math.random() < 0.005) {
                         const directionToPlayer = spaceshipGroup.position.clone().sub(enemy.position).normalize();
                         const projectileGeometry = new THREE.SphereGeometry(0.1, 8, 8);
@@ -1642,7 +1574,7 @@
                         enemyProjectiles.push(projectile);
                     }
                 } else if (enemy.userData.type === 'cyan') {
-
+                    // Move straight toward the player
                     const targetPos = spaceshipGroup.position.clone();
                     const directionToTarget = targetPos.sub(enemy.position).normalize();
                     const distanceToTarget = enemy.position.distanceTo(targetPos);
@@ -1654,11 +1586,11 @@
                 }
             });
 
-
-
+                        // REVISAR 3
+            // Enemies clean up
             despawnEnemiesOutOfBounds();
 
-
+            // Move enemy projectiles
             enemyProjectiles.forEach((projectile, index) => {
                 if (projectile.userData.direction) {
                     projectile.position.add(projectile.userData.direction.clone().multiplyScalar(projectile.userData.velocity));
@@ -1671,57 +1603,31 @@
                 }
             });
 
-
+            // Boss color change on hit
             if (bossHitTimer > 0) {
                 bossHitTimer -= 1 / 60;
                 if (bossHitTimer <= 0) {
                     bossHitCount++;
                     if (bossHitCount < 2) {
-
+                        // Toggle color and reset timer for next flash
                         boss.material.color.setHex(boss.material.color.getHex() === bossOriginalColor ? bossHitColor : bossOriginalColor);
                         bossHitTimer = 0.5;
                     } else {
-
+                        // Final revert to original color
                         boss.material.color.setHex(bossOriginalColor);
                         bossHitCount = 0;
                     }
                 }
             }
 
-
-
+            // Boss behavior
             if (boss) {
                 boss.position.z = spaceshipGroup.position.z - 20;
                 boss.position.x = Math.sin(trackPosition * 0.1) * 5;
-                boss.position.y = Math.sin(trackPosition * 0.5) * 3; // Up and down movement
-                if (Math.random() < 0.05) {
-
-                    const eyePositions = [
-                        boss.children[3].getWorldPosition(new THREE.Vector3()), // Left eye
-                        boss.children[4].getWorldPosition(new THREE.Vector3())  // Right eye
-                    ];
-                    eyePositions.forEach(pos => {
-                        const projectile = new THREE.Mesh(
-                            new THREE.SphereGeometry(0.1, 8, 8),
-                            new THREE.MeshBasicMaterial({ color: 0xffff00 })
-                        );
-                        projectile.position.copy(pos);
-                        const direction = spaceshipGroup.position.clone().sub(pos).normalize();
-                        projectile.userData.direction = direction;
-                        projectile.userData.velocity = 0.3;
-                        scene.add(projectile);
-                        enemyProjectiles.push(projectile);
-                    });
-                }
-
-                const healthBar = document.getElementById('bossHealthBar');
-                if (healthBar) {
-                    const fill = healthBar.children[0];
-                    fill.style.width = `${(boss.health / 10) * 100}%`;
-                }
+                if (Math.random() < 0.05) enemyShoot(boss);
             }
 
-
+            // Update invincibility timer
             if (invincibilityTimer > 0) {
                 invincibilityTimer -= 1 / 60;
                 spaceshipGroup.children.forEach(child => child.material.color.setHex(0xffff00));
@@ -1732,19 +1638,19 @@
                 spaceshipGroup.children[3].material.color.setHex(0x0000ff);
             }
 
-
-            mountains.forEach((mountain, index) => {
-                if (mountain.position.z > spaceshipGroup.position.z + 10) {
-                    scene.remove(mountain);
-                    if (mountain.userData.nameTag) document.body.removeChild(mountain.userData.nameTag);
-                    mountains.splice(index, 1);
-                }
-            });
+            // Clean up logic
+            // mountains.forEach((mountain, index) => {
+            //     if (mountain.position.z > spaceshipGroup.position.z + 10) {
+            //         scene.remove(mountain);
+            //         if (mountain.userData.nameTag) document.body.removeChild(mountain.userData.nameTag);
+            //         mountains.splice(index, 1);
+            //     }
+            // });
 
             billboards.forEach((billboard, index) => {
                 if (billboard.position.z > spaceshipGroup.position.z + 10) {
                     scene.remove(billboard);
-                    if (billboard.userData.nameTag) document.body.removeChild(billboard.userData.nameTag);
+                    // if (billboard.userData.nameTag) document.body.removeChild(billboard.userData.nameTag);
                     billboards.splice(index, 1);
                 }
             });
@@ -1752,7 +1658,7 @@
             sideShips.forEach((ship, index) => {
                 if (ship.position.z > spaceshipGroup.position.z + 10) {
                     scene.remove(ship);
-                    if (ship.userData.nameTag) document.body.removeChild(ship.userData.nameTag);
+                    // if (ship.userData.nameTag) document.body.removeChild(ship.userData.nameTag);
                     sideShips.splice(index, 1);
                 }
             });
@@ -1760,7 +1666,7 @@
             obstacles.forEach((obstacle, index) => {
                 if (obstacle.position.z > spaceshipGroup.position.z + 10) {
                     scene.remove(obstacle);
-                    if (obstacle.userData.nameTag) document.body.removeChild(obstacle.userData.nameTag);
+                    // if (obstacle.userData.nameTag) document.body.removeChild(obstacle.userData.nameTag);
                     obstacles.splice(index, 1);
                 }
 });
@@ -1774,19 +1680,19 @@
 
             updateOuterCrosshair();
 
+            // Update name tags
+            // updateNameTags();
 
-            updateNameTags();
-
-
+            // Check collisions
             checkCollisions();
 
-
+            // Update UI
             updateUI();
 
             renderer.render(scene, camera);
         }
 
-
+        // Handle window resize
         window.addEventListener('resize', () => {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
