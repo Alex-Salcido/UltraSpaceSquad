@@ -245,7 +245,7 @@
             by <a href="https://x.com/AlexerSalcido" target="_blank" class="author">Alex Salcido</a> <span>+ Grok3 + 3JS</span>
         </div>
 
-        <div class="description">A free-to-play space shooter. v0.9</div>
+        <div class="description">A free-to-play space shooter. v0.91</div>
         
         <input type="text" id="playerNameInput" placeholder="Enter your name">
         <button onclick="startGame()">Start Game</button>
@@ -908,13 +908,13 @@
         function spawnBoss() {
             const group = new THREE.Group();
 
-// Body (box)
+            // Body (box)
             const bodyGeometry = new THREE.BoxGeometry(3, 4, 2);
             const bodyMaterial = new THREE.MeshBasicMaterial({ color: bossOriginalColor });
             const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
             group.add(body);
 
-// Arms (cylinders)
+            // Arms (cylinders)
             const armGeometry = new THREE.CylinderGeometry(0.5, 0.5, 3, 8);
             const armMaterial = new THREE.MeshBasicMaterial({ color: 0x666666 });
             const leftArm = new THREE.Mesh(armGeometry, armMaterial);
@@ -925,14 +925,14 @@
             rightArm.rotation.z = -Math.PI / 4;
             group.add(leftArm, rightArm);
 
-// Head (sphere)
+            // Head (sphere)
             const headGeometry = new THREE.SphereGeometry(1, 16, 16);
             const headMaterial = new THREE.MeshBasicMaterial({ color: 0x333333 });
             const head = new THREE.Mesh(headGeometry, headMaterial);
             head.position.set(0, 2.5, 0);
             group.add(head);
 
-// Eyes (for shooting)
+            // Eyes (for shooting)
             const eyeGeometry = new THREE.SphereGeometry(0.2, 8, 8);
             const eyeMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
             const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
@@ -942,13 +942,15 @@
             group.add(leftEye, rightEye);
 
             group.position.set(0, 0, -trackPosition - 20);
-            group.health = 10;
+            group.userData.health = 50; // Store health in userData
+            group.userData.maxHealth = 50;
             if (showEnemyTags) createNameTag(group, "Zorgon the Devastator");
             scene.add(group);
             boss = group;
             bossSpawned = true;
-            
-// Weak spots
+            console.log(`Boss spawned, health: ${boss.userData.health}`);
+
+            // Weak spots
             const weakSpotGeometry = new THREE.SphereGeometry(0.5, 8, 8);
             const weakSpotMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
             for (let i = 0; i < 3; i++) {
@@ -960,15 +962,15 @@
                 group.add(weakSpot);
                 weakSpots.push(weakSpot);
             }
-        
-// Health bar
+
+            // Health bar
             const healthBar = document.createElement('div');
             healthBar.id = 'bossHealthBar';
             healthBar.style.position = 'absolute';
             healthBar.style.top = '10px';
             healthBar.style.left = '50%';
             healthBar.style.transform = 'translateX(-50%)';
-            healthBar.style.width = '200px';
+            healthBar.style.width = '600px';
             healthBar.style.height = '20px';
             healthBar.style.background = '#333';
             healthBar.style.border = '1px solid #fff';
@@ -1009,23 +1011,24 @@
             bossDestroySound.play();
             scene.remove(boss);
             document.body.removeChild(document.getElementById('bossHealthBar'));
-            document.body.removeChild(document.querySelector('div[style*="top: 35px"]')); // Remove label
+            document.body.removeChild(document.querySelector('div[style*="top: 35px"]'));
             boss = null;
             weakSpots = [];
             score += 100;
-setTimeout(() => {
-            document.getElementById('gameOverMenu').style.display = 'flex';
-            document.getElementById('gameOverMenu').querySelector('h2').textContent = "Level Completed!";
-            document.getElementById('finalScore').textContent = score;
-                        if (score > highScore) {
-                highScore = score;
-                localStorage.setItem('highScore', highScore);
-                localStorage.setItem('highScoreName', playerName);
-            }
-}, 2000); // 2-second delay
+            setTimeout(() => {
+                document.getElementById('gameOverMenu').style.display = 'flex';
+                document.getElementById('gameOverMenu').querySelector('h2').textContent = "Level Completed!";
+                document.getElementById('finalScore').textContent = score;
+                if (score > highScore) {
+                    highScore = score;
+                    localStorage.setItem('highScore', highScore);
+                    localStorage.setItem('highScoreName', playerName);
+                }
+            }, 2000); // 2-second delay
         }
+                
 
-        // Enemy shooting
+// Enemy shooting
         function enemyShoot(enemy) {
             const projectileGeometry = new THREE.SphereGeometry(0.1, 8, 8);
             const projectileMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
@@ -1112,20 +1115,28 @@ setTimeout(() => {
                     //     }
                     // });
                     if (!hitWeakSpot && distanceToBoss < 3) {
-                        boss.health -= 1;
+                        boss.userData.health -= 1;
                         bossHitTimer = 0.5; // Start color change timer
                         bossHitCount = 0; // Reset hit count
-                        boss.material.color.setHex(bossHitColor); // Change to hit color
+                        boss.children[0].material.color.setHex(bossHitColor); // Change to hit color
                         scene.remove(projectile);
                         projectiles.splice(pIndex, 1);
                         enemyDestroySound.play();
                         triggerCameraShake(0.1, 0.2);
                     }
-                    if (boss.health <= 0) {
+                    if (boss.userData.health <= 0) {
                         explodeBoss();
                     }
+
                 }
             });
+
+            // Update health bar
+                let healthBar = document.getElementById('bossHealthBar');
+                if (healthBar) {
+                    const fill = healthBar.children[0];
+                    fill.style.width = `${(boss.userData.health / boss.userData.maxHealth) * 100}%`;
+                }
 
             if (invincibilityTimer <= 0) {
                 enemyProjectiles.forEach((projectile, pIndex) => {
@@ -1610,11 +1621,11 @@ setTimeout(() => {
                     bossHitCount++;
                     if (bossHitCount < 2) {
                         // Toggle color and reset timer for next flash
-                        boss.material.color.setHex(boss.material.color.getHex() === bossOriginalColor ? bossHitColor : bossOriginalColor);
+                        boss.children[0].material.color.setHex(boss.children[0].material.color.getHex() === bossOriginalColor ? bossHitColor : bossOriginalColor);
                         bossHitTimer = 0.5;
                     } else {
                         // Final revert to original color
-                        boss.material.color.setHex(bossOriginalColor);
+                        boss.children[0].material.color.setHex(bossOriginalColor);
                         bossHitCount = 0;
                     }
                 }
@@ -1624,7 +1635,15 @@ setTimeout(() => {
             if (boss) {
                 boss.position.z = spaceshipGroup.position.z - 20;
                 boss.position.x = Math.sin(trackPosition * 0.1) * 5;
+                boss.position.y = Math.sin(trackPosition * 0.5) * 3;
                 if (Math.random() < 0.05) enemyShoot(boss);
+            }
+
+            if (bossHitTimer > 0) {
+                bossHitTimer -= 1 / 60; // Assuming 60 FPS
+                if (bossHitTimer <= 0) {
+                    boss.children[0].material.color.setHex(bossOriginalColor); // Reset body color
+                }
             }
 
             // Update invincibility timer
