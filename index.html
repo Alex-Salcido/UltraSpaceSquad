@@ -228,14 +228,10 @@
             width: 100px;
             height: 100px;
             z-index: 11; /* Above game elements */
-            display: none; /* Hidden by default */
         }
         #movementJoystick { left: 20px; }
         #aimJoystick { right: 20px; }
-        @media (max-width: 480px) and (pointer: coarse) { /* Mobile with touch */
-            #movementJoystick, #aimJoystick {
-                display: block; /* Show on mobile */
-            }
+        @media (max-width: 480px) {
             #movementJoystick, #aimJoystick {
                 width: 80px;
                 height: 80px; /* Smaller on tiny screens */
@@ -249,7 +245,7 @@
         <div class="credit">
             by <a href="https://x.com/AlexerSalcido" target="_blank" class="author">Alex Salcido</a> <span>+ Grok3 + 3JS</span>
         </div>
-        <div class="description">A free-to-play space shooter. v0.91</div>
+        <div class="description">A free-to-play space shooter. v0.92</div>
         <input type="text" id="playerNameInput" placeholder="Enter your name">
         <button onclick="startGame()">Start Game</button>
         <p id="nameError"></p>
@@ -1186,69 +1182,64 @@
             cleanCollection(powerUps, "powerUps");
         }
 
-
         // Nipple.js Joystick Setup
-            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-            let movementJoystick, aimJoystick;
+        const movementJoystick = nipplejs.create({
+            zone: document.getElementById('movementJoystick'),
+            mode: 'static',
+            position: { left: '50%', top: '50%' },
+            color: 'cyan',
+            size: 100
+        });
 
-            if (isMobile) {
-                movementJoystick = nipplejs.create({
-                    zone: document.getElementById('movementJoystick'),
-                    mode: 'static',
-                    position: { left: '50%', top: '50%' },
-                    color: 'cyan',
-                    size: 100
-                });
+        const aimJoystick = nipplejs.create({
+            zone: document.getElementById('aimJoystick'),
+            mode: 'static',
+            position: { left: '50%', top: '50%' },
+            color: 'red',
+            size: 100
+        });
 
-                aimJoystick = nipplejs.create({
-                    zone: document.getElementById('aimJoystick'),
-                    mode: 'static',
-                    position: { left: '50%', top: '50%' },
-                    color: 'red',
-                    size: 100
-                });
-
-                movementJoystick.on('start', () => {
-                    movementJoystickActive = true;
-                }).on('move', (evt, data) => {
-                    if (data.direction) {
-                        const angle = data.angle.radian;
-                        const force = data.distance / 50; // Max distance normalized
-                        keys.w = angle > Math.PI / 4 && angle < 3 * Math.PI / 4;
-                        keys.s = angle > 5 * Math.PI / 4 && angle < 7 * Math.PI / 4;
-                        keys.a = angle > 3 * Math.PI / 4 && angle < 5 * Math.PI / 4;
-                        keys.d = angle > 7 * Math.PI / 4 || angle < Math.PI / 4;
-                    }
-                }).on('end', () => {
-                    movementJoystickActive = false;
-                    keys.w = keys.a = keys.s = keys.d = false;
-                });
-
-                aimJoystick.on('start', () => {
-                    aimJoystickActive = true;
-                }).on('move', (evt, data) => {
-                    if (data.direction) {
-                        const angle = data.angle.radian;
-                        const force = data.distance / 50; // Max distance normalized
-                        crosshairX += Math.cos(angle) * force * 10;
-                        crosshairY -= Math.sin(angle) * force * 10; // Y is inverted
-                        crosshairX = Math.max(0, Math.min(window.innerWidth, crosshairX));
-                        crosshairY = Math.max(0, Math.min(window.innerHeight, crosshairY));
-                        crosshair.style.left = crosshairX + 'px';
-                        crosshair.style.top = crosshairY + 'px';
-                        mouse.x = (crosshairX / window.innerWidth) * 2 - 1;
-                        mouse.y = -(crosshairY / window.innerHeight) * 2 + 1;
-                        raycaster.setFromCamera(mouse, camera);
-                        const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -trackPosition - 50);
-                        raycaster.ray.intersectPlane(plane, mouseWorldPos);
-                        shootProjectile();
-                    }
-                }).on('end', () => {
-                    aimJoystickActive = false;
-                });
+        movementJoystick.on('start', () => {
+            movementJoystickActive = true;
+        }).on('move', (evt, data) => {
+            if (data.direction) {
+                const angle = data.angle.radian;
+                const force = data.distance / 50; // Max distance normalized
+                keys.w = angle > Math.PI / 4 && angle < 3 * Math.PI / 4;
+                keys.s = angle > 5 * Math.PI / 4 && angle < 7 * Math.PI / 4;
+                keys.a = angle > 3 * Math.PI / 4 && angle < 5 * Math.PI / 4;
+                keys.d = angle > 7 * Math.PI / 4 || angle < Math.PI / 4;
             }
+        }).on('end', () => {
+            movementJoystickActive = false;
+            keys.w = keys.a = keys.s = keys.d = false;
+        });
 
 
+        aimJoystick.on('start', () => {
+            aimJoystickActive = true;
+        }).on('move', (evt, data) => {
+            if (data.direction) {
+                const angle = data.angle.radian;
+                const force = data.distance / 50; // Max distance normalized
+                // Move crosshair based on joystick
+                crosshairX += Math.cos(angle) * force * 10;
+                crosshairY -= Math.sin(angle) * force * 10; // Y is inverted
+                crosshairX = Math.max(0, Math.min(window.innerWidth, crosshairX));
+                crosshairY = Math.max(0, Math.min(window.innerHeight, crosshairY));
+                crosshair.style.left = crosshairX + 'px';
+                crosshair.style.top = crosshairY + 'px';
+                mouse.x = (crosshairX / window.innerWidth) * 2 - 1;
+                mouse.y = -(crosshairY / window.innerHeight) * 2 + 1;
+                raycaster.setFromCamera(mouse, camera);
+                const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -trackPosition - 50);
+                raycaster.ray.intersectPlane(plane, mouseWorldPos);
+                // Shoot with cooldown
+                shootProjectile();
+            }
+        }).on('end', () => {
+            aimJoystickActive = false;
+        });
 
 
 
