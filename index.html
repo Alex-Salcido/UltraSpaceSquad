@@ -245,7 +245,7 @@
         <div class="credit">
             by <a href="https://x.com/AlexerSalcido" target="_blank" class="author">Alex Salcido</a> <span>+ Grok3 + 3JS</span>
         </div>
-        <div class="description">A free-to-play space shooter. v0.93</div>
+        <div class="description">A free-to-play space shooter. v0.93.1</div>
         <input type="text" id="playerNameInput" placeholder="Enter your name">
         <button onclick="startGame()">Start Game</button>
         <p id="nameError"></p>
@@ -1204,11 +1204,11 @@
         }).on('move', (evt, data) => {
             if (data.direction) {
                 const angle = data.angle.radian;
-                const force = data.distance / 50; // Max distance normalized
-                keys.w = angle > Math.PI / 4 && angle < 3 * Math.PI / 4;
-                keys.s = angle > 5 * Math.PI / 4 && angle < 7 * Math.PI / 4;
-                keys.a = angle > 3 * Math.PI / 4 && angle < 5 * Math.PI / 4;
-                keys.d = angle > 7 * Math.PI / 4 || angle < Math.PI / 4;
+                const force = (data.distance / 50) * 0.5; // Lower multiplier (0.5) for less sensitivity, increase (e.g., 1.5) for more
+                keys.w = angle > Math.PI / 4 && angle < 3 * Math.PI / 4 && force > 0.2; // Add threshold to avoid jitter
+                keys.s = angle > 5 * Math.PI / 4 && angle < 7 * Math.PI / 4 && force > 0.2;
+                keys.a = angle > 3 * Math.PI / 4 && angle < 5 * Math.PI / 4 && force > 0.2;
+                keys.d = (angle > 7 * Math.PI / 4 || angle < Math.PI / 4) && force > 0.2;
             }
         }).on('end', () => {
             movementJoystickActive = false;
@@ -1221,21 +1221,20 @@
         }).on('move', (evt, data) => {
             if (data.direction) {
                 const angle = data.angle.radian;
-                const force = data.distance / 50; // Max distance normalized
-                // Move crosshair based on joystick
-                crosshairX += Math.cos(angle) * force * 10;
-                crosshairY -= Math.sin(angle) * force * 10; // Y is inverted
-                crosshairX = Math.max(0, Math.min(window.innerWidth, crosshairX));
-                crosshairY = Math.max(0, Math.min(window.innerHeight, crosshairY));
-                crosshair.style.left = crosshairX + 'px';
-                crosshair.style.top = crosshairY + 'px';
-                mouse.x = (crosshairX / window.innerWidth) * 2 - 1;
-                mouse.y = -(crosshairY / window.innerHeight) * 2 + 1;
-                raycaster.setFromCamera(mouse, camera);
-                const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -trackPosition - 50);
-                raycaster.ray.intersectPlane(plane, mouseWorldPos);
-                // Shoot with cooldown
-                shootProjectile();
+                const force = (data.distance / 50) * 0.2; // Lower multiplier (0.5) for less sensitivity, increase (e.g., 1.5) for more
+                if (force > 0) { // Add threshold to avoid jitter
+                    crosshairX += Math.cos(angle) * force * 10;
+                    crosshairY -= Math.sin(angle) * force * 10; // Y is inverted
+                    crosshairX = Math.max(0, Math.min(window.innerWidth, crosshairX));
+                    crosshairY = Math.max(0, Math.min(window.innerHeight, crosshairY));
+                    crosshair.style.left = crosshairX + 'px';
+                    crosshair.style.top = crosshairY + 'px';
+                    mouse.x = (crosshairX / window.innerWidth) * 2 - 1;
+                    mouse.y = -(crosshairY / window.innerHeight) * 2 + 1;
+                    raycaster.setFromCamera(mouse, camera);
+                    const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), -trackPosition - 50);
+                    raycaster.ray.intersectPlane(plane, mouseWorldPos);
+                    shootProjectile();}
             }
         }).on('end', () => {
             aimJoystickActive = false;
