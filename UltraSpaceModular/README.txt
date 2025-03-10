@@ -1,0 +1,1 @@
+﻿"This code is copyright Alejandro Salcido Montenegro 2025 and is not licensed for commercial use or modification. Any commercial use or modification requires explicit permission."
