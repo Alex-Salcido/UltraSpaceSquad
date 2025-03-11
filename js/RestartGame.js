@@ -95,6 +95,12 @@ class RestartGame {
                     obj.material.dispose();
                 }
             });
+
+            if (this.game.boss.healthBar) {
+                document.body.removeChild(this.game.boss.healthBar);
+                this.game.boss.healthBar = null; // Clear reference
+                this.game.boss.healthBarFill = null;
+            }
             this.game.boss = null;
             this.game.bossSpawned = false;
         }
